@@ -41,34 +41,40 @@ const cleanDatabase = async () => {
     await mongoose.connect(MONGO_URI);
     console.log('MongoDB connected successfully.\n');
 
-    // 1. Identify Super Admin and Admin Roles and UserTypes
+    // 1. Identify Super Admin, Admin, and HR Roles and UserTypes
     const adminUserTypes = await UserType.find({ name: { $in: ['Super Admin', 'Admin'] } });
     const adminUserTypeIds = adminUserTypes.map(ut => ut._id);
 
     const adminRoles = await Role.find({
       $or: [
-        { name: { $in: ['Super Admin', 'Admin'] } },
+        { name: { $in: ['Super Admin', 'Admin', 'Human Resource', 'HR'] } },
         { userType: { $in: adminUserTypeIds } }
       ]
     });
     const adminRoleIds = adminRoles.map(r => r._id);
 
-    // 2. Identify Super Admin and Admin Users to KEEP
+    // 2. Identify Super Admin, Admin, and HR Users to KEEP
     const adminUsers = await User.find({
       $or: [
         { role: { $in: adminRoleIds } },
-        { email: 'admin@digiexweb.com' }
+        { roles: { $in: adminRoleIds } },
+        { email: 'admin@digiexweb.com' },
+        { email: 'hr@digiexweb.com' },
+        { email: /admin/i },
+        { email: /superadmin/i },
+        { email: /^hr@/i }
       ]
     });
 
     const adminUserIds = adminUsers.map(u => u._id);
-    console.log('=== ADMIN USERS TO PRESERVE ===');
+    console.log('=== ADMIN & HR USERS TO PRESERVE ===');
     if (adminUsers.length === 0) {
-      console.log('WARNING: No admin users found via role search! Preserving users with admin/superadmin email pattern to prevent lockout.');
+      console.log('WARNING: No admin/HR users found via role search! Preserving users with admin/superadmin/hr email pattern to prevent lockout.');
       const fallbackAdmins = await User.find({
         $or: [
           { email: /admin/i },
-          { email: /superadmin/i }
+          { email: /superadmin/i },
+          { email: /^hr@/i }
         ]
       });
       fallbackAdmins.forEach(u => {
