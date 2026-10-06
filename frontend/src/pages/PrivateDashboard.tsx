@@ -40,19 +40,19 @@ export default function PrivateDashboard() {
       fetchHolidays();
       fetchAssignedProjectDelays(userId);
 
-      axios.get('http://localhost:5000/api/settings').then(res => {
+      axios.get('/api/settings').then(res => {
         if (res.data.success) {
           const settingsMap: any = {};
           (res.data.data || []).forEach((s: any) => { settingsMap[s.key] = s.value; });
           if (settingsMap.company_logo) {
             const logo = settingsMap.company_logo;
-            setCompanyLogo(logo.startsWith('http') ? logo : `http://localhost:5000${logo}`);
+            setCompanyLogo(logo.startsWith('http') ? logo : `${logo}`);
           }
           if (settingsMap.company_name) setCompanyName(settingsMap.company_name);
         }
       }).catch(err => console.error('Error fetching settings for dashboard', err));
 
-      axios.get('http://localhost:5000/api/clients').then(res => {
+      axios.get('/api/clients').then(res => {
         if (res.data.success) {
           const list = res.data.data;
           setClientStats({
@@ -67,7 +67,7 @@ export default function PrivateDashboard() {
 
   const fetchLeaveBalance = async (userId: string) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/leaves/balance/${userId}`);
+      const res = await axios.get(`/api/leaves/balance/${userId}`);
       if (res.data.success) {
         setLeaveBalance(res.data.data || []);
       }
@@ -78,7 +78,7 @@ export default function PrivateDashboard() {
 
   const fetchAssignedProjectDelays = async (userId: string) => {
     try {
-      const res = await axios.get('http://localhost:5000/api/clients/my-projects');
+      const res = await axios.get('/api/clients/my-projects');
       if (res.data.success) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -119,7 +119,7 @@ export default function PrivateDashboard() {
 
   const fetchUserProfile = async (userId: string) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/users/${userId}`);
+      const res = await axios.get(`/api/users/${userId}`);
       if (res.data.success) {
         setUser(res.data.data);
       }
@@ -130,7 +130,7 @@ export default function PrivateDashboard() {
 
   const fetchAttendance = async (userId: string) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/attendance/today/${userId}`);
+      const res = await axios.get(`/api/attendance/today/${userId}`);
       setAttendance(res.data.data);
     } catch (err) {
       console.error(err);
@@ -140,7 +140,7 @@ export default function PrivateDashboard() {
   const fetchStats = async (userId: string) => {
     try {
       const now = new Date();
-      const res = await axios.get(`http://localhost:5000/api/attendance/stats/${userId}?month=${now.getMonth()+1}&year=${now.getFullYear()}`);
+      const res = await axios.get(`/api/attendance/stats/${userId}?month=${now.getMonth()+1}&year=${now.getFullYear()}`);
       if (res.data.success) {
         setStats(res.data.data);
       }
@@ -151,7 +151,7 @@ export default function PrivateDashboard() {
 
   const fetchBirthdays = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/users/birthdays');
+      const res = await axios.get('/api/users/birthdays');
       if (res.data.success) {
         setBirthdays(res.data.data);
       }
@@ -162,7 +162,7 @@ export default function PrivateDashboard() {
 
   const fetchHolidays = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/holidays');
+      const res = await axios.get('/api/holidays');
       if (res.data.success) {
         // filter to upcoming holidays
         const today = new Date();
@@ -177,7 +177,7 @@ export default function PrivateDashboard() {
 
   const fetchReceivedWishes = async (userId: string) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/birthday-wishes/${userId}`);
+      const res = await axios.get(`/api/birthday-wishes/${userId}`);
       if (res.data.success && res.data.data.length > 0) {
         setReceivedWishes(res.data.data);
         setShowReceivedPopup(true);
@@ -190,7 +190,7 @@ export default function PrivateDashboard() {
   const handleSendWish = async () => {
     if (!user || !wishRecipient) return;
     try {
-      await axios.post('http://localhost:5000/api/birthday-wishes/send', {
+      await axios.post('/api/birthday-wishes/send', {
         senderId: user._id || user.id,
         receiverId: wishRecipient._id,
         message: wishMessage
@@ -207,7 +207,7 @@ export default function PrivateDashboard() {
   const handleCloseWishes = async () => {
     if (!user) return;
     try {
-      await axios.put(`http://localhost:5000/api/birthday-wishes/read/${user._id || user.id}`);
+      await axios.put(`/api/birthday-wishes/read/${user._id || user.id}`);
       setShowReceivedPopup(false);
       setReceivedWishes([]);
     } catch (err) {
@@ -328,7 +328,7 @@ export default function PrivateDashboard() {
 
     try {
       const [location, ip] = await Promise.all([getLocationPromise, getIpPromise]);
-      const res = await axios.post('http://localhost:5000/api/attendance/clock-in', { userId, location, ip });
+      const res = await axios.post('/api/attendance/clock-in', { userId, location, ip });
       if (res.data?.success) {
         setAttendance(res.data.data);
         window.dispatchEvent(new Event('attendance-update'));
@@ -347,7 +347,7 @@ export default function PrivateDashboard() {
     setIsActionLoading(true);
     const userId = user._id || user.id;
     try {
-      const res = await axios.post('http://localhost:5000/api/attendance/clock-out', { userId });
+      const res = await axios.post('/api/attendance/clock-out', { userId });
       if (res.data?.success) {
         setAttendance(res.data.data);
         window.dispatchEvent(new Event('attendance-update'));
@@ -364,7 +364,7 @@ export default function PrivateDashboard() {
     setIsActionLoading(true);
     const userId = user._id || user.id;
     try {
-      const res = await axios.post('http://localhost:5000/api/attendance/break-start', { userId });
+      const res = await axios.post('/api/attendance/break-start', { userId });
       if (res.data?.success) {
         setAttendance(res.data.data);
         window.dispatchEvent(new Event('attendance-update'));
@@ -381,7 +381,7 @@ export default function PrivateDashboard() {
     setIsActionLoading(true);
     const userId = user._id || user.id;
     try {
-      const res = await axios.post('http://localhost:5000/api/attendance/break-end', { userId });
+      const res = await axios.post('/api/attendance/break-end', { userId });
       if (res.data?.success) {
         setAttendance(res.data.data);
         window.dispatchEvent(new Event('attendance-update'));
@@ -457,7 +457,7 @@ export default function PrivateDashboard() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px', background: '#fff', padding: '24px', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', flex: '1', minWidth: '300px' }}>
             <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary) 0%, #3b82f6 100%)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', fontWeight: 'bold', overflow: 'hidden', flexShrink: 0 }}>
               {user?.profilePhoto ? (
-                <img src={`http://localhost:5000${user.profilePhoto}`} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img src={`${user.profilePhoto}`} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
                 user?.name?.charAt(0) || 'U'
               )}
@@ -724,7 +724,7 @@ export default function PrivateDashboard() {
                   }}>
                     <div style={{ width: '100%', height: '100%', borderRadius: '50%', overflow: 'hidden', background: 'linear-gradient(135deg, #fb7185 0%, #e11d48 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '24px', fontWeight: 800 }}>
                       {b.profilePhoto ? (
-                        <img src={`http://localhost:5000${b.profilePhoto}`} alt={b.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <img src={`${b.profilePhoto}`} alt={b.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
                         b.name?.charAt(0) || 'U'
                       )}
@@ -847,7 +847,7 @@ export default function PrivateDashboard() {
                       flexShrink: 0
                     }}>
                       {b.profilePhoto ? (
-                        <img src={`http://localhost:5000${b.profilePhoto}`} alt={b.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <img src={`${b.profilePhoto}`} alt={b.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
                         <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontSize: '18px', fontWeight: 700 }}>
                           {b.name?.charAt(0)}
@@ -993,7 +993,7 @@ export default function PrivateDashboard() {
                 }}>
                   <div style={{ width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
                     {wish.sender?.profilePhoto ? (
-                      <img src={`http://localhost:5000${wish.sender.profilePhoto}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={`${wish.sender.profilePhoto}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     ) : (
                       <div style={{ width: '100%', height: '100%', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
                         {wish.sender?.name?.charAt(0)}

@@ -61,7 +61,7 @@ export default function DashboardLayout() {
   const fetchExpiringRenewals = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/api/client-packages/expiring-renewals', {
+      const res = await axios.get('/api/client-packages/expiring-renewals', {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
       if (res.data.success) {
@@ -74,11 +74,11 @@ export default function DashboardLayout() {
 
   const fetchMenuPermissions = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/settings');
+      const res = await axios.get('/api/settings');
       const settings = res.data.data || [];
       const savedLogo = settings.find((s: any) => s.key === 'company_logo')?.value;
       if (savedLogo) {
-        const fullLogoUrl = savedLogo.startsWith('http') ? savedLogo : `http://localhost:5000${savedLogo}`;
+        const fullLogoUrl = savedLogo.startsWith('http') ? savedLogo : `${savedLogo}`;
         setCompanyLogo(fullLogoUrl);
       }
 
@@ -125,7 +125,7 @@ export default function DashboardLayout() {
   const fetchNotifications = async () => {
     if (!userId) return;
     try {
-      const res = await axios.get(`http://localhost:5000/api/notifications/${userId}/${roleName}`);
+      const res = await axios.get(`/api/notifications/${userId}/${roleName}`);
       if (res.data.success) {
         setNotifications(res.data.data);
       }
@@ -135,7 +135,7 @@ export default function DashboardLayout() {
   };
   const fetchSubscriptions = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/client-packages');
+      const res = await axios.get('/api/client-packages');
       if (res.data.success) {
         setSubscriptions(res.data.data);
       }
@@ -146,7 +146,7 @@ export default function DashboardLayout() {
 
   const fetchInvoices = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/invoices');
+      const res = await axios.get('/api/invoices');
       if (res.data.success) {
         setInvoices(res.data.data);
       }
@@ -252,7 +252,7 @@ export default function DashboardLayout() {
 
     const captureAndSendLocation = async (lat: number, lng: number) => {
       try {
-        await axios.post('http://localhost:5000/api/attendance/location-log', {
+        await axios.post('/api/attendance/location-log', {
           userId,
           location: { lat, lng }
         });
@@ -288,7 +288,7 @@ export default function DashboardLayout() {
 
       // Check if user is actively clocked in before logging
       try {
-        const res = await axios.get(`http://localhost:5000/api/attendance/today/${userId}`);
+        const res = await axios.get(`/api/attendance/today/${userId}`);
         const att = res.data.data;
         if (att && att.clockIn && !att.clockOut) {
           await captureAndSendLocation(latitude, longitude);
@@ -300,7 +300,7 @@ export default function DashboardLayout() {
 
     const checkAndSetupTracking = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/attendance/today/${userId}`);
+        const res = await axios.get(`/api/attendance/today/${userId}`);
         const att = res.data.data;
         
         // If user is clocked in and not clocked out
@@ -381,7 +381,7 @@ export default function DashboardLayout() {
 
   const handleNotificationClick = async (n: any) => {
     try {
-      await axios.put(`http://localhost:5000/api/notifications/read/${n._id}/${userId}`);
+      await axios.put(`/api/notifications/read/${n._id}/${userId}`);
       fetchNotifications();
     } catch (err) {
       console.error(err);
@@ -417,7 +417,7 @@ export default function DashboardLayout() {
 
   const handleMarkAllAsRead = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/notifications/read-all/${userId}/${roleName}`);
+      await axios.put(`/api/notifications/read-all/${userId}/${roleName}`);
       fetchNotifications();
     } catch (err) {
       console.error(err);
@@ -891,7 +891,7 @@ export default function DashboardLayout() {
               >
                 <div className="avatar" style={{ overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {user?.profilePhoto ? (
-                    <img src={`http://localhost:5000${user.profilePhoto}`} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={`${user.profilePhoto}`} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
                     user?.name?.charAt(0) || 'A'
                   )}

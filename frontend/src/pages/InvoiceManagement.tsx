@@ -156,11 +156,11 @@ export default function InvoiceManagement() {
     setLoading(true);
     try {
       const [resInvoices, resClients, resServices, resSettings, resDetails] = await Promise.all([
-        axios.get('http://localhost:5000/api/invoices'),
-        axios.get('http://localhost:5000/api/invoices/clients'),
-        axios.get('http://localhost:5000/api/services'),
-        axios.get('http://localhost:5000/api/settings'),
-        axios.get('http://localhost:5000/api/service-details')
+        axios.get('/api/invoices'),
+        axios.get('/api/invoices/clients'),
+        axios.get('/api/services'),
+        axios.get('/api/settings'),
+        axios.get('/api/service-details')
       ]);
 
       if (resInvoices.data.success) {
@@ -233,7 +233,7 @@ export default function InvoiceManagement() {
 
   const fetchClientPackageItems = async (clientId: string) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/client-packages?clientId=${clientId}&status=Active`);
+      const res = await axios.get(`/api/client-packages?clientId=${clientId}&status=Active`);
       if (res.data.success && res.data.data.length > 0) {
         const activePkg = res.data.data[0]; // grab the first active package
         const itemsList: InvoiceItem[] = activePkg.services.map((s: any) => {
@@ -426,10 +426,10 @@ export default function InvoiceManagement() {
 
     try {
       if (currentInvoiceId) {
-        await axios.put(`http://localhost:5000/api/invoices/${currentInvoiceId}`, payload);
+        await axios.put(`/api/invoices/${currentInvoiceId}`, payload);
         showToast('success', 'Invoice updated successfully.');
       } else {
-        await axios.post('http://localhost:5000/api/invoices', payload);
+        await axios.post('/api/invoices', payload);
         showToast('success', 'Invoice created successfully.');
       }
       resetForm();
@@ -446,7 +446,7 @@ export default function InvoiceManagement() {
   const handleCloneInvoice = async (id: string) => {
     if (!window.confirm('Are you sure you want to clone this invoice? This will generate a new unpaid invoice with a fresh INV number.')) return;
     try {
-      const res = await axios.post(`http://localhost:5000/api/invoices/clone/${id}`);
+      const res = await axios.post(`/api/invoices/clone/${id}`);
       if (res.data.success) {
         showToast('success', `Invoice cloned successfully. New Invoice: ${res.data.data.invoiceNumber}`);
         fetchAllData();
@@ -460,7 +460,7 @@ export default function InvoiceManagement() {
   const handleDeleteInvoice = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this invoice permanently? This cannot be undone.')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/invoices/${id}`);
+      await axios.delete(`/api/invoices/${id}`);
       showToast('success', 'Invoice deleted successfully.');
       fetchAllData();
     } catch (err: any) {
@@ -523,7 +523,7 @@ export default function InvoiceManagement() {
         action: 'PAYMENT_RECORDED'
       };
 
-      await axios.put(`http://localhost:5000/api/invoices/${paymentInvoice._id}`, payload);
+      await axios.put(`/api/invoices/${paymentInvoice._id}`, payload);
       showToast('success', 'Payment recorded successfully.');
       setShowPaymentModal(false);
       setPaymentInvoice(null);

@@ -18,7 +18,7 @@ export default function MarketingLocationTracking() {
   const fetchRecords = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/attendance/marketing-tracking?date=${date}`);
+      const res = await axios.get(`/api/attendance/marketing-tracking?date=${date}`);
       if (res.data.success) {
         setRecords(res.data.data);
       }

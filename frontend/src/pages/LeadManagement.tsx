@@ -494,7 +494,7 @@ export default function LeadManagement() {
   const fetchLeads = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/leads');
+      const res = await axios.get('/api/leads');
       setLeads(res.data.data);
     } catch (err) {
       console.error(err);
@@ -505,7 +505,7 @@ export default function LeadManagement() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/users');
+      const res = await axios.get('/api/users');
       setUsers(res.data.data);
     } catch (err) {
       console.error(err);
@@ -514,7 +514,7 @@ export default function LeadManagement() {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/business-categories');
+      const res = await axios.get('/api/business-categories');
       setCategories(res.data.data);
     } catch (err) {
       console.error('Error fetching business categories:', err);
@@ -523,7 +523,7 @@ export default function LeadManagement() {
 
   const fetchLocations = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/locations');
+      const res = await axios.get('/api/locations');
       setLocations(res.data.data);
     } catch (err) {
       console.error('Error fetching locations:', err);
@@ -532,7 +532,7 @@ export default function LeadManagement() {
 
   const fetchPackages = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/packages');
+      const res = await axios.get('/api/packages');
       if (res.data.success) {
         setPackages(res.data.data);
       }
@@ -628,7 +628,7 @@ export default function LeadManagement() {
     };
 
     try {
-      const res = await axios.post('http://localhost:5000/api/client-packages/convert-lead', payload);
+      const res = await axios.post('/api/client-packages/convert-lead', payload);
       if (res.data.success) {
         alert('Lead successfully converted to Client. Subscription activated and first Invoice generated!');
         setShowLeadConvertModal(false);
@@ -803,10 +803,10 @@ export default function LeadManagement() {
           }
         }
 
-        await axios.put(`http://localhost:5000/api/leads/${editingLeadId}`, updatePayload);
+        await axios.put(`/api/leads/${editingLeadId}`, updatePayload);
         alert('Lead updated successfully!');
       } else {
-        const res = await axios.post('http://localhost:5000/api/leads', formData);
+        const res = await axios.post('/api/leads', formData);
         alert('Lead added successfully!');
         if (res.data && res.data.data && res.data.data._id) {
           savedLeadId = res.data.data._id;
@@ -850,7 +850,7 @@ export default function LeadManagement() {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this lead?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/leads/${id}`);
+      await axios.delete(`/api/leads/${id}`);
       alert('Lead deleted successfully!');
       fetchLeads();
     } catch (err: any) {
@@ -996,7 +996,7 @@ export default function LeadManagement() {
         payload.phone = appointmentPhone;
       }
 
-      await axios.put(`http://localhost:5000/api/leads/${currentLeadId}`, payload);
+      await axios.put(`/api/leads/${currentLeadId}`, payload);
 
       alert(isEditingAppointment ? 'Appointment details updated successfully!' : 'Disposition updated successfully!');
       setIsEditingAppointment(false);
@@ -1013,7 +1013,7 @@ export default function LeadManagement() {
   const handleAddCategorySubmit = async () => {
     if (!newCatName.trim()) return;
     try {
-      const res = await axios.post('http://localhost:5000/api/business-categories', { name: newCatName.trim() });
+      const res = await axios.post('/api/business-categories', { name: newCatName.trim() });
       alert('Category added successfully!');
       setNewCatName('');
       setShowAddCatInput(false);
@@ -1036,7 +1036,7 @@ export default function LeadManagement() {
       return;
     }
     try {
-      await axios.post(`http://localhost:5000/api/business-categories/${selectedCatObj._id}/subcategories`, {
+      await axios.post(`/api/business-categories/${selectedCatObj._id}/subcategories`, {
         subcategoryName: newSubcatName.trim()
       });
       alert('Subcategory added successfully!');
@@ -1270,7 +1270,7 @@ export default function LeadManagement() {
 
         setIsUploading(true);
         setBulkUploadResult(null);
-        const res = await axios.post('http://localhost:5000/api/leads/bulk', { leads: mappedData });
+        const res = await axios.post('/api/leads/bulk', { leads: mappedData });
         setBulkUploadResult(res.data);
         fetchLeads();
       } catch (err: any) {
@@ -1294,7 +1294,7 @@ export default function LeadManagement() {
     const uploadKey = typeof fieldName === 'number' ? `service-${fieldName}` : fieldName;
     setUploadingImage(uploadKey);
     try {
-      const res = await axios.post('http://localhost:5000/api/upload', uploadData, {
+      const res = await axios.post('/api/upload', uploadData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       const fileUrl = res.data.fileUrl;
@@ -2251,7 +2251,7 @@ export default function LeadManagement() {
                 {formData.shopFrontImage && (
                   <div style={{ marginBottom: '10px' }}>
                     <img 
-                      src={`http://localhost:5000${formData.shopFrontImage}`} 
+                      src={`${formData.shopFrontImage}`}
                       alt="Shop Front Preview" 
                       style={{ width: '80px', height: '80px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #e2e8f0' }} 
                     />
@@ -2319,7 +2319,7 @@ export default function LeadManagement() {
 
                         {imgUrl ? (
                           <div style={{ width: '100%', height: '120px', borderRadius: '6px', overflow: 'hidden', border: '1px solid #cbd5e1' }}>
-                            <img src={`http://localhost:5000${imgUrl}`} alt={label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            <img src={`${imgUrl}`} alt={label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                           </div>
                         ) : (
                           <div style={{ width: '100%', height: '120px', border: '2px dashed #cbd5e1', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', color: '#94a3b8' }}>
@@ -2614,7 +2614,7 @@ export default function LeadManagement() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '4px 0' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             {lead.businessLogo ? (
-                              <img src={`http://localhost:5000${lead.businessLogo}`} alt="logo" style={{ width: '32px', height: '32px', borderRadius: '4px', objectFit: 'cover' }} />
+                              <img src={`${lead.businessLogo}`} alt="logo" style={{ width: '32px', height: '32px', borderRadius: '4px', objectFit: 'cover' }} />
                             ) : (
                               <div style={{ width: '32px', height: '32px', borderRadius: '4px', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#94a3b8' }}>🏢</div>
                             )}
@@ -3580,19 +3580,19 @@ export default function LeadManagement() {
                       {selectedLeadForInfo.businessLogo && (
                         <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
                           <span style={{ fontSize: '11px', fontWeight: 600, color: '#64748b' }}>Logo</span>
-                          <img src={`http://localhost:5000${selectedLeadForInfo.businessLogo}`} alt="Logo" style={{ width: '100%', height: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #cbd5e1' }} />
+                          <img src={`${selectedLeadForInfo.businessLogo}`} alt="Logo" style={{ width: '100%', height: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #cbd5e1' }} />
                         </div>
                       )}
                       {selectedLeadForInfo.shopFrontImage && (
                         <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
                           <span style={{ fontSize: '11px', fontWeight: 600, color: '#64748b' }}>Shop Front</span>
-                          <img src={`http://localhost:5000${selectedLeadForInfo.shopFrontImage}`} alt="Shop Front" style={{ width: '100%', height: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #cbd5e1' }} />
+                          <img src={`${selectedLeadForInfo.shopFrontImage}`} alt="Shop Front" style={{ width: '100%', height: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #cbd5e1' }} />
                         </div>
                       )}
                       {(selectedLeadForInfo.serviceImages || []).filter((img: string) => img).map((imgUrl: string, idx: number) => (
                         <div key={idx} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
                           <span style={{ fontSize: '11px', fontWeight: 600, color: '#64748b' }}>Service Image {idx + 1}</span>
-                          <img src={`http://localhost:5000${imgUrl}`} alt={`Service ${idx + 1}`} style={{ width: '100%', height: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #cbd5e1' }} />
+                          <img src={`${imgUrl}`} alt={`Service ${idx + 1}`} style={{ width: '100%', height: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #cbd5e1' }} />
                         </div>
                       ))}
                     </div>

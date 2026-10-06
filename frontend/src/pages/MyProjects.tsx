@@ -30,6 +30,8 @@ interface TeamMember {
   name: string;
   email?: string;
   employeeId?: string;
+  startDate?: string;
+  endDate?: string;
   role?: any;
 }
 
@@ -109,7 +111,7 @@ export default function MyProjects() {
 
     try {
       setUpdatingExpiration(true);
-      const res = await axios.put(`http://localhost:5000/api/client-packages/update-expiration/${selectedProject._id}`, {
+      const res = await axios.put(`/api/client-packages/update-expiration/${selectedProject._id}`, {
         newExpirationDate: expirationDateInput
       });
       if (res.data.success) {
@@ -126,7 +128,7 @@ export default function MyProjects() {
   const fetchProjects = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/clients/my-projects');
+      const res = await axios.get('/api/clients/my-projects');
       if (res.data.success) {
         setProjects(res.data.data);
       }
@@ -193,7 +195,7 @@ export default function MyProjects() {
 
     try {
       setSubmittingNote(true);
-      const res = await axios.post(`http://localhost:5000/api/clients/${projectId}/notes`, { 
+      const res = await axios.post(`/api/clients/${projectId}/notes`, {
         note: noteText,
         taggedUsers: selectedTaggedUsers 
       });

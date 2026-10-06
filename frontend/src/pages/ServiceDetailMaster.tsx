@@ -30,7 +30,7 @@ export default function ServiceDetailMaster() {
   const fetchDetails = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/service-details', {
+      const res = await axios.get('/api/service-details', {
         params: {
           service: serviceFilter,
           status: statusFilter
@@ -48,7 +48,7 @@ export default function ServiceDetailMaster() {
 
   const fetchServices = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/services');
+      const res = await axios.get('/api/services');
       if (res.data.success) {
         const activeServices = res.data.data.filter((s: any) => s.status === 'Active');
         setServices(activeServices);
@@ -109,9 +109,9 @@ export default function ServiceDetailMaster() {
 
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/service-details/${editingId}`, payload);
+        await axios.put(`/api/service-details/${editingId}`, payload);
       } else {
-        await axios.post('http://localhost:5000/api/service-details', payload);
+        await axios.post('/api/service-details', payload);
       }
       setShowModal(false);
       fetchDetails();
@@ -123,7 +123,7 @@ export default function ServiceDetailMaster() {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this service detail?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/service-details/${id}`);
+      await axios.delete(`/api/service-details/${id}`);
       fetchDetails();
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to delete service detail');
@@ -133,7 +133,7 @@ export default function ServiceDetailMaster() {
   const toggleStatus = async (detail: any) => {
     const newStatus = detail.status === 'Active' ? 'Inactive' : 'Active';
     try {
-      await axios.put(`http://localhost:5000/api/service-details/${detail._id}`, { status: newStatus });
+      await axios.put(`/api/service-details/${detail._id}`, { status: newStatus });
       fetchDetails();
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to toggle status');

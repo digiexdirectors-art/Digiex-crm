@@ -32,7 +32,7 @@ export default function LocationManagement() {
   const fetchLocations = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/locations');
+      const res = await axios.get('/api/locations');
       setLocations(res.data.data);
     } catch (err) {
       console.error(err);
@@ -49,9 +49,9 @@ export default function LocationManagement() {
     e.preventDefault();
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/locations/${editingId}`, formData);
+        await axios.put(`/api/locations/${editingId}`, formData);
       } else {
-        await axios.post('http://localhost:5000/api/locations', formData);
+        await axios.post('/api/locations', formData);
       }
       setShowModal(false);
       setFormData({ name: '', address: '', city: '', state: '', country: 'India', status: 'Active' });
@@ -78,7 +78,7 @@ export default function LocationManagement() {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this location?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/locations/${id}`);
+      await axios.delete(`/api/locations/${id}`);
       fetchLocations();
     } catch (err) {
       console.error(err);

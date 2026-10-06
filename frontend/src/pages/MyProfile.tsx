@@ -23,7 +23,7 @@ export default function MyProfile() {
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/users/${currentUser._id || currentUser.id}`);
+      const res = await axios.get(`/api/users/${currentUser._id || currentUser.id}`);
       const user = res.data.data;
       const isSameAddr = Boolean(user.currentAddress && user.currentAddress === user.permanentAddress);
       setSameAsCurrentAddress(isSameAddr);
@@ -50,7 +50,7 @@ export default function MyProfile() {
 
   const fetchAssignedProjectDelays = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/clients/my-projects');
+      const res = await axios.get('/api/clients/my-projects');
       if (res.data.success) {
         const userId = currentUser._id || currentUser.id;
         const today = new Date();
@@ -105,7 +105,7 @@ export default function MyProfile() {
     uploadData.append('file', file);
     setUploading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/upload', uploadData, {
+      const res = await axios.post('/api/upload', uploadData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setFormData((prev: any) => ({ ...prev, profilePhoto: res.data.fileUrl }));
@@ -120,7 +120,7 @@ export default function MyProfile() {
     e.preventDefault();
     setSaving(true);
     try {
-      await axios.put(`http://localhost:5000/api/users/${currentUser._id || currentUser.id}`, formData);
+      await axios.put(`/api/users/${currentUser._id || currentUser.id}`, formData);
       alert('Profile updated successfully!');
       
       // Update local storage user just in case name or photo changed
@@ -224,7 +224,7 @@ export default function MyProfile() {
           
           <div className="form-group" style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '10px' }}>
             {formData.profilePhoto ? (
-              <img src={`http://localhost:5000${formData.profilePhoto}`} alt="avatar" style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', border: '3px solid #e2e8f0' }} />
+              <img src={`${formData.profilePhoto}`} alt="avatar" style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', border: '3px solid #e2e8f0' }} />
             ) : (
               <div style={{ width: 100, height: 100, borderRadius: '50%', background: '#f8fafc', border: '2px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Upload size={30} color="#94a3b8" />

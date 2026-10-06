@@ -34,7 +34,7 @@ export default function ServiceMaster() {
   const fetchServices = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/services', {
+      const res = await axios.get('/api/services', {
         params: {
           search,
           category: categoryFilter,
@@ -53,7 +53,7 @@ export default function ServiceMaster() {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/service-categories');
+      const res = await axios.get('/api/service-categories');
       if (res.data.success) {
         setCategories(res.data.data);
       }
@@ -123,9 +123,9 @@ export default function ServiceMaster() {
 
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/services/${editingId}`, payload);
+        await axios.put(`/api/services/${editingId}`, payload);
       } else {
-        await axios.post('http://localhost:5000/api/services', payload);
+        await axios.post('/api/services', payload);
       }
       setShowModal(false);
       fetchServices();
@@ -137,7 +137,7 @@ export default function ServiceMaster() {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this service?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/services/${id}`);
+      await axios.delete(`/api/services/${id}`);
       fetchServices();
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to delete service');
@@ -147,7 +147,7 @@ export default function ServiceMaster() {
   const toggleStatus = async (service: any) => {
     const newStatus = service.status === 'Active' ? 'Inactive' : 'Active';
     try {
-      await axios.put(`http://localhost:5000/api/services/${service._id}`, { status: newStatus });
+      await axios.put(`/api/services/${service._id}`, { status: newStatus });
       fetchServices();
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to toggle status');

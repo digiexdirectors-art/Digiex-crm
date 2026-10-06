@@ -58,7 +58,7 @@ export default function UserManagement() {
   useEffect(() => {
     const fetchMlType = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/leaves/types');
+        const res = await axios.get('/api/leaves/types');
         const ml = (res.data.data || []).find((t: any) => t.code === 'ML');
         if (ml) setMlLeaveTypeId(ml._id);
       } catch (err) {
@@ -90,7 +90,7 @@ export default function UserManagement() {
     uploadData.append('file', file);
     setMaternityUploading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/upload', uploadData, {
+      const res = await axios.post('/api/upload', uploadData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setMaternityForm(prev => ({ ...prev, attachment: res.data.fileUrl }));
@@ -117,7 +117,7 @@ export default function UserManagement() {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/leaves/apply', {
+      await axios.post('/api/leaves/apply', {
         employeeId: maternityEmployee._id,
         leaveTypeId: mlLeaveTypeId,
         fromDate: maternityForm.fromDate,
@@ -156,7 +156,7 @@ export default function UserManagement() {
 
   const fetchWfhDates = async (id: string) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/attendance/wfh/${id}`);
+      const res = await axios.get(`/api/attendance/wfh/${id}`);
       setWfhDates(res.data.data);
     } catch (err) { console.error(err); }
   };
@@ -190,7 +190,7 @@ export default function UserManagement() {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/attendance/mark-wfh', { userId: wfhUserId, dates: dateList });
+      await axios.post('/api/attendance/mark-wfh', { userId: wfhUserId, dates: dateList });
       alert(`${dateList.length} WFH date(s) marked successfully!`);
       setWfhFromDate('');
       setWfhToDate('');
@@ -209,7 +209,7 @@ export default function UserManagement() {
 
   const generateSlip = async () => {
     try {
-      const res = await axios.post('http://localhost:5000/api/salary/generate', { userId: slipUserId, month: slipMonth, year: slipYear, arrears: arrearsInput });
+      const res = await axios.post('/api/salary/generate', { userId: slipUserId, month: slipMonth, year: slipYear, arrears: arrearsInput });
       setSlipData(res.data.data);
     } catch (err: any) {
       alert(err.response?.data?.message || 'Error generating slip');
@@ -219,7 +219,7 @@ export default function UserManagement() {
   const sendEmailToEmployee = async () => {
     if (!slipData?._id) return;
     try {
-      await axios.post('http://localhost:5000/api/salary/send-email', { slipId: slipData._id });
+      await axios.post('/api/salary/send-email', { slipId: slipData._id });
       alert('Salary slip emailed to employee successfully!');
     } catch (err: any) {
       alert(err.response?.data?.message || 'Error sending email');
@@ -265,7 +265,7 @@ export default function UserManagement() {
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     
     // Header Data
-    const logoUrl = companySettings.company_logo ? `http://localhost:5000${companySettings.company_logo}` : 'https://digiexweb.com/assets/img/logo.png';
+    const logoUrl = companySettings.company_logo ? `${companySettings.company_logo}` : 'https://digiexweb.com/assets/img/logo.png';
     const companyName = companySettings.company_name || 'DIGIEX WEB SERVICES';
 
     // Helper to load image as base64 using Canvas to ensure format is known (PNG)
@@ -462,7 +462,7 @@ export default function UserManagement() {
 
   const handleDownloadAnnexurePDF = async (ctcAmount: number, includePF = true, includeESI = true) => {
     const doc = new jsPDF();
-    const logoUrl = companySettings.company_logo ? `http://localhost:5000${companySettings.company_logo}` : 'https://digiexweb.com/assets/img/logo.png';
+    const logoUrl = companySettings.company_logo ? `${companySettings.company_logo}` : 'https://digiexweb.com/assets/img/logo.png';
     const companyName = companySettings.company_name || 'DIGIEX WEB SERVICES';
 
     const loadImageAsPng = async (url: string): Promise<string | null> => {
@@ -1994,9 +1994,9 @@ export default function UserManagement() {
   const fetchData = async () => {
     try {
       const [userRes, roleRes, settingsRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/users'),
-        axios.get('http://localhost:5000/api/roles'),
-        axios.get('http://localhost:5000/api/settings')
+        axios.get('/api/users'),
+        axios.get('/api/roles'),
+        axios.get('/api/settings')
       ]);
       if (!isAdminOrHR) {
         const myUserId = String(loggedInUser._id || loggedInUser.id || '');
@@ -2147,7 +2147,7 @@ export default function UserManagement() {
     uploadData.append('file', file);
     setUploading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/upload', uploadData, {
+      const res = await axios.post('/api/upload', uploadData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       const fileUrl = res.data.fileUrl;
@@ -2350,9 +2350,9 @@ export default function UserManagement() {
       if (editingUserId) {
         const { password, ...updateData } = payload;
         const finalPayload = password ? payload : updateData;
-        await axios.put(`http://localhost:5000/api/users/${editingUserId}`, finalPayload);
+        await axios.put(`/api/users/${editingUserId}`, finalPayload);
       } else {
-        await axios.post('http://localhost:5000/api/users', payload);
+        await axios.post('/api/users', payload);
       }
       setShowModal(false);
       fetchData();
@@ -2364,7 +2364,7 @@ export default function UserManagement() {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/users/${id}`);
+      await axios.delete(`/api/users/${id}`);
       fetchData();
     } catch (err) {
       alert('Error deleting user');
@@ -2376,7 +2376,7 @@ export default function UserManagement() {
     return (
       <div style={{ marginTop: '8px' }}>
         <a 
-          href={`http://localhost:5000${url}`} 
+          href={`${url}`}
           target="_blank" 
           rel="noreferrer" 
           download
@@ -2450,7 +2450,7 @@ export default function UserManagement() {
                   <td><strong>{user.employeeId || 'N/A'}</strong></td>
                   <td style={{ fontWeight: 500, display: 'flex', alignItems: 'center', gap: '12px' }}>
                     {user.profilePhoto ? (
-                      <img src={`http://localhost:5000${user.profilePhoto}`} alt="avatar" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover' }} />
+                      <img src={`${user.profilePhoto}`} alt="avatar" style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover' }} />
                     ) : (
                       <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>👤</div>
                     )}
@@ -2648,7 +2648,7 @@ export default function UserManagement() {
               <div style={{ display: activeTab === 'basic' ? 'grid' : 'none', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div className="form-group" style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', gap: '16px' }}>
                   {formData.profilePhoto ? (
-                    <img src={`http://localhost:5000${formData.profilePhoto}`} alt="avatar" style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', border: '2px solid #e2e8f0' }} />
+                    <img src={`${formData.profilePhoto}`} alt="avatar" style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', border: '2px solid #e2e8f0' }} />
                   ) : (
                     <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#f8fafc', border: '2px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <Upload size={24} color="#94a3b8" />
@@ -3432,7 +3432,7 @@ export default function UserManagement() {
                       onClick={async () => {
                         if (!wfhDate) return;
                         try {
-                          await axios.post('http://localhost:5000/api/attendance/mark-wfh', { userId: wfhUserId, dates: [wfhDate] });
+                          await axios.post('/api/attendance/mark-wfh', { userId: wfhUserId, dates: [wfhDate] });
                           fetchWfhDates(wfhUserId!);
                         } catch (err) { alert('Error adding WFH date'); }
                       }}
@@ -3463,7 +3463,7 @@ export default function UserManagement() {
                         onClick={async () => {
                           if (window.confirm('Remove this WFH date?')) {
                             try {
-                              await axios.post('http://localhost:5000/api/attendance/remove-wfh', { userId: wfhUserId, date: d.date });
+                              await axios.post('/api/attendance/remove-wfh', { userId: wfhUserId, date: d.date });
                               fetchWfhDates(wfhUserId!);
                             } catch (err) { alert('Error removing WFH date'); }
                           }

@@ -349,10 +349,10 @@ export default function ClientManagement() {
     setLoading(true);
     try {
       const [resClients, resUsers, resServices, resDetails] = await Promise.all([
-        axios.get('http://localhost:5000/api/clients'),
-        axios.get('http://localhost:5000/api/users'),
-        axios.get('http://localhost:5000/api/services'),
-        axios.get('http://localhost:5000/api/service-details')
+        axios.get('/api/clients'),
+        axios.get('/api/users'),
+        axios.get('/api/services'),
+        axios.get('/api/service-details')
       ]);
 
       if (resClients.data.success) setClients(resClients.data.data);
@@ -397,7 +397,7 @@ export default function ClientManagement() {
   const fetchAuditLogs = async (clientId: string) => {
     try {
       setAuditLoading(true);
-      const res = await axios.get(`http://localhost:5000/api/audit-logs/client/${clientId}`);
+      const res = await axios.get(`/api/audit-logs/client/${clientId}`);
       if (res.data.success) {
         setAuditLogs(res.data.data);
       }
@@ -412,7 +412,7 @@ export default function ClientManagement() {
   const fetchClientProfile = async (clientId: string) => {
     setDetailLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/clients/${clientId}`);
+      const res = await axios.get(`/api/clients/${clientId}`);
       if (res.data.success) {
         const { client, packagesHistory, invoicesHistory } = res.data.data;
         setClientProfile(client);
@@ -474,7 +474,7 @@ export default function ClientManagement() {
     if (!selectedClientId) return;
     try {
       setSubmitLoading(true);
-      const res = await axios.post(`http://localhost:5000/api/clients/${selectedClientId}/send-verification-email`);
+      const res = await axios.post(`/api/clients/${selectedClientId}/send-verification-email`);
       if (res.data.success) {
         showToast('success', res.data.message || 'Verification email sent to client with verification link!');
         setShowVerifyModal(false);
@@ -493,7 +493,7 @@ export default function ClientManagement() {
     if (!selectedClientId) return;
     try {
       setSubmitLoading(true);
-      const res = await axios.post(`http://localhost:5000/api/clients/${selectedClientId}/override-verification`, { isVerified: targetStatus });
+      const res = await axios.post(`/api/clients/${selectedClientId}/override-verification`, { isVerified: targetStatus });
       if (res.data.success) {
         showToast('success', `Verification status overridden to ${targetStatus}`);
         fetchClientProfile(selectedClientId);
@@ -512,7 +512,7 @@ export default function ClientManagement() {
     if (!selectedClientId) return;
     try {
       setSubmitLoading(true);
-      const res = await axios.post('http://localhost:5000/api/client-packages/add-service', {
+      const res = await axios.post('/api/client-packages/add-service', {
         clientId: selectedClientId,
         ...serviceForm
       });
@@ -547,7 +547,7 @@ export default function ClientManagement() {
     if (!currentService) return;
     try {
       setSubmitLoading(true);
-      const res = await axios.put(`http://localhost:5000/api/client-packages/update-service/${currentService._id}`, serviceForm);
+      const res = await axios.put(`/api/client-packages/update-service/${currentService._id}`, serviceForm);
       if (res.data.success) {
         showToast('success', 'Service updated successfully!');
         setShowEditServiceModal(false);
@@ -666,7 +666,7 @@ export default function ClientManagement() {
         services: pkg.services,
         serviceDetails: pkg.serviceDetails
       };
-      const res = await axios.put(`http://localhost:5000/api/client-packages/update-service/${pkg._id}`, payload);
+      const res = await axios.put(`/api/client-packages/update-service/${pkg._id}`, payload);
       if (res.data.success) {
         showToast('success', 'Deliverables and pricing updated successfully!');
         fetchClientProfile(selectedClientId!);
@@ -684,7 +684,7 @@ export default function ClientManagement() {
     if (!currentService) return;
     try {
       setSubmitLoading(true);
-      const res = await axios.post(`http://localhost:5000/api/client-packages/${currentService._id}/features`, featureForm);
+      const res = await axios.post(`/api/client-packages/${currentService._id}/features`, featureForm);
       if (res.data.success) {
         showToast('success', 'Feature added successfully!');
         setShowAddFeatureModal(false);
@@ -710,7 +710,7 @@ export default function ClientManagement() {
     if (!currentService || !currentFeature) return;
     try {
       setSubmitLoading(true);
-      const res = await axios.put(`http://localhost:5000/api/client-packages/${currentService._id}/features/${currentFeature._id}`, featureForm);
+      const res = await axios.put(`/api/client-packages/${currentService._id}/features/${currentFeature._id}`, featureForm);
       if (res.data.success) {
         showToast('success', 'Feature updated successfully!');
         setShowEditFeatureModal(false);
@@ -729,7 +729,7 @@ export default function ClientManagement() {
     if (!window.confirm('Are you sure you want to delete this feature?')) return;
     try {
       setSubmitLoading(true);
-      const res = await axios.delete(`http://localhost:5000/api/client-packages/${serviceId}/features/${featureId}`);
+      const res = await axios.delete(`/api/client-packages/${serviceId}/features/${featureId}`);
       if (res.data.success) {
         showToast('success', 'Feature deleted successfully!');
         fetchClientProfile(selectedClientId!);
@@ -748,7 +748,7 @@ export default function ClientManagement() {
     if (!noteText.trim() || !selectedClientId) return;
 
     try {
-      const res = await axios.post(`http://localhost:5000/api/clients/${selectedClientId}/notes`, { note: noteText });
+      const res = await axios.post(`/api/clients/${selectedClientId}/notes`, { note: noteText });
       if (res.data.success) {
         showToast('success', 'Internal note added successfully.');
         setNoteText('');
@@ -772,7 +772,7 @@ export default function ClientManagement() {
 
     try {
       // 1. Upload file to static folder
-      const uploadRes = await axios.post('http://localhost:5000/api/upload', formData, {
+      const uploadRes = await axios.post('/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -786,7 +786,7 @@ export default function ClientManagement() {
           fileType: docCategory
         };
 
-        const saveRes = await axios.post(`http://localhost:5000/api/clients/${selectedClientId}/documents`, docPayload);
+        const saveRes = await axios.post(`/api/clients/${selectedClientId}/documents`, docPayload);
         if (saveRes.data.success) {
           showToast('success', `${docCategory} uploaded successfully.`);
           setDocFile(null);
@@ -809,7 +809,7 @@ export default function ClientManagement() {
     if (!selectedClientId || !window.confirm('Are you sure you want to delete this document?')) return;
 
     try {
-      const res = await axios.delete(`http://localhost:5000/api/clients/${selectedClientId}/documents/${docId}`);
+      const res = await axios.delete(`/api/clients/${selectedClientId}/documents/${docId}`);
       if (res.data.success) {
         showToast('success', 'Document deleted successfully.');
         fetchClientProfile(selectedClientId);
@@ -919,10 +919,10 @@ export default function ClientManagement() {
         delete cleanedPayload.numberOfEmployees;
       }
 
-      const res = await axios.put(`http://localhost:5000/api/clients/${selectedClientId}`, cleanedPayload);
+      const res = await axios.put(`/api/clients/${selectedClientId}`, cleanedPayload);
       if (res.data.success) {
         try {
-          const emailRes = await axios.post(`http://localhost:5000/api/clients/${selectedClientId}/send-verification-email`);
+          const emailRes = await axios.post(`/api/clients/${selectedClientId}/send-verification-email`);
           showToast('success', emailRes.data.message || 'Client details saved & verification email sent to client!');
         } catch (verErr: any) {
           console.error('Failed to send verification email link after update:', verErr);
@@ -953,7 +953,7 @@ export default function ClientManagement() {
     };
 
     try {
-      const res = await axios.put(`http://localhost:5000/api/clients/${selectedClientId}`, payload);
+      const res = await axios.put(`/api/clients/${selectedClientId}`, payload);
       if (res.data.success) {
         showToast('success', 'Account Management assignments updated.');
         setShowAssignModal(false);
@@ -996,7 +996,7 @@ export default function ClientManagement() {
         })),
         projectStatus: statusToSave
       };
-      const res = await axios.put(`http://localhost:5000/api/clients/${selectedClientId}`, payload);
+      const res = await axios.put(`/api/clients/${selectedClientId}`, payload);
       if (res.data.success) {
         showToast('success', 'Project assigned to development team members successfully!');
         setShowAssignTeamModal(false);
@@ -2702,7 +2702,7 @@ export default function ClientManagement() {
                               </div>
                               <div style={{ display: 'flex', gap: '8px' }}>
                                 <a 
-                                  href={`http://localhost:5000${doc.fileUrl}`} 
+                                  href={`${doc.fileUrl}`}
                                   target="_blank" 
                                   rel="noreferrer"
                                   className="btn-secondary" 

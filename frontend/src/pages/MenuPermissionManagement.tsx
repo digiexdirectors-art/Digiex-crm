@@ -24,8 +24,8 @@ export default function MenuPermissionManagement() {
     setLoading(true);
     try {
       const [rolesRes, settingsRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/roles'),
-        axios.get('http://localhost:5000/api/settings')
+        axios.get('/api/roles'),
+        axios.get('/api/settings')
       ]);
 
       const fetchedRoles = rolesRes.data.data || [];
@@ -107,7 +107,7 @@ export default function MenuPermissionManagement() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await axios.post('http://localhost:5000/api/settings', {
+      await axios.post('/api/settings', {
         key: 'role_menu_permissions',
         value: rolePermissions
       });

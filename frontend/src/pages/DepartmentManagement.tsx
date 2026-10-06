@@ -23,7 +23,7 @@ export default function DepartmentManagement() {
 
   const fetchDepartments = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/departments');
+      const res = await axios.get('/api/departments');
       setDepartments(res.data.data);
     } catch (err) {
       console.error(err);
@@ -40,9 +40,9 @@ export default function DepartmentManagement() {
     setLoading(true);
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/departments/${editingId}`, { name });
+        await axios.put(`/api/departments/${editingId}`, { name });
       } else {
-        await axios.post('http://localhost:5000/api/departments', { name });
+        await axios.post('/api/departments', { name });
       }
       setName('');
       setEditingId(null);
@@ -67,7 +67,7 @@ export default function DepartmentManagement() {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this department?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/departments/${id}`);
+      await axios.delete(`/api/departments/${id}`);
       fetchDepartments();
     } catch (err) {
       console.error(err);

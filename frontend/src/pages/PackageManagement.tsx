@@ -134,7 +134,7 @@ export default function PackageManagement() {
 
   const fetchPaymentSettings = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/settings');
+      const res = await axios.get('/api/settings');
       const data = res.data.data;
       const getVal = (key: string) => data.find((s: any) => s.key === key)?.value;
       setPaymentSettings({
@@ -222,15 +222,15 @@ export default function PackageManagement() {
   const fetchData = async () => {
     try {
       const [resServices, resPackages, resProposals, resSubs, resInvoices, resUsers, resLeads, resCategories, resDetails] = await Promise.all([
-        axios.get('http://localhost:5000/api/services'),
-        axios.get('http://localhost:5000/api/packages'),
-        axios.get('http://localhost:5000/api/proposals'),
-        axios.get('http://localhost:5000/api/client-packages'),
-        axios.get('http://localhost:5000/api/invoices'),
-        axios.get('http://localhost:5000/api/users'),
-        axios.get('http://localhost:5000/api/leads'),
-        axios.get('http://localhost:5000/api/service-categories'),
-        axios.get('http://localhost:5000/api/service-details')
+        axios.get('/api/services'),
+        axios.get('/api/packages'),
+        axios.get('/api/proposals'),
+        axios.get('/api/client-packages'),
+        axios.get('/api/invoices'),
+        axios.get('/api/users'),
+        axios.get('/api/leads'),
+        axios.get('/api/service-categories'),
+        axios.get('/api/service-details')
       ]);
 
       if (resServices.data.success) setServices(resServices.data.data);
@@ -632,9 +632,9 @@ export default function PackageManagement() {
 
     try {
       if (pkgEditingId) {
-        await axios.put(`http://localhost:5000/api/packages/${pkgEditingId}`, payload);
+        await axios.put(`/api/packages/${pkgEditingId}`, payload);
       } else {
-        await axios.post('http://localhost:5000/api/packages', payload);
+        await axios.post('/api/packages', payload);
       }
       setShowPkgModal(false);
       fetchData();
@@ -646,7 +646,7 @@ export default function PackageManagement() {
   const handlePkgDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this package?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/packages/${id}`);
+      await axios.delete(`/api/packages/${id}`);
       fetchData();
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to delete package');
@@ -994,7 +994,7 @@ export default function PackageManagement() {
     }
 
     try {
-      const res = await axios.put(`http://localhost:5000/api/invoices/${invoice._id}`, {
+      const res = await axios.put(`/api/invoices/${invoice._id}`, {
         dueDate: newDate.toISOString(),
         action: 'DUE_DATE_UPDATED'
       });
@@ -1122,7 +1122,7 @@ export default function PackageManagement() {
     };
 
     try {
-      const propRes = await axios.post('http://localhost:5000/api/proposals', proposalPayload);
+      const propRes = await axios.post('/api/proposals', proposalPayload);
       if (!propRes.data.success) {
         alert('Failed to save proposal');
         return;
@@ -1138,7 +1138,7 @@ export default function PackageManagement() {
           changedAt: new Date().toISOString()
         };
         const updatedHistory = [newEntry, ...(lead.appointmentHistory || [])];
-        await axios.put(`http://localhost:5000/api/leads/${lead._id}`, {
+        await axios.put(`/api/leads/${lead._id}`, {
           appointmentHistory: updatedHistory,
           stage: 'Proposal Sent'
         });
@@ -1175,7 +1175,7 @@ export default function PackageManagement() {
           changedBy: loggedInUser.name || 'System'
         };
 
-        const convRes = await axios.post('http://localhost:5000/api/client-packages/convert-lead', convertPayload);
+        const convRes = await axios.post('/api/client-packages/convert-lead', convertPayload);
         if (convRes.data.success) {
           alert('Lead successfully converted to Client. Subscription activated and Invoice generated!');
           
@@ -1403,7 +1403,7 @@ export default function PackageManagement() {
     };
 
     try {
-      const res = await axios.get('http://localhost:5000/api/settings');
+      const res = await axios.get('/api/settings');
       if (res.data.success && Array.isArray(res.data.data)) {
         const data = res.data.data;
         const getVal = (key: string) => data.find((s: any) => s.key === key)?.value;
@@ -1416,7 +1416,7 @@ export default function PackageManagement() {
         
         const logoPath = getVal('company_logo');
         if (logoPath) {
-          companySettings.logo = logoPath.startsWith('http') ? logoPath : `http://localhost:5000${logoPath}`;
+          companySettings.logo = logoPath.startsWith('http') ? logoPath : `${logoPath}`;
         }
         
         const addr = [
@@ -1827,7 +1827,7 @@ export default function PackageManagement() {
     };
 
     try {
-      const res = await axios.get('http://localhost:5000/api/settings');
+      const res = await axios.get('/api/settings');
       if (res.data.success && Array.isArray(res.data.data)) {
         const data = res.data.data;
         const getVal = (key: string) => data.find((s: any) => s.key === key)?.value;
@@ -1840,7 +1840,7 @@ export default function PackageManagement() {
         
         const logoPath = getVal('company_logo');
         if (logoPath) {
-          companySettings.logo = logoPath.startsWith('http') ? logoPath : `http://localhost:5000${logoPath}`;
+          companySettings.logo = logoPath.startsWith('http') ? logoPath : `${logoPath}`;
         }
         
         const addr = [
@@ -2332,10 +2332,10 @@ export default function PackageManagement() {
     };
 
     try {
-      const res = await axios.post('http://localhost:5000/api/client-packages/convert-lead', payload);
+      const res = await axios.post('/api/client-packages/convert-lead', payload);
       if (res.data.success) {
         // Accept proposal
-        await axios.put(`http://localhost:5000/api/proposals/${selectedProposalToConvert._id}`, { status: 'Accepted' });
+        await axios.put(`/api/proposals/${selectedProposalToConvert._id}`, { status: 'Accepted' });
         alert('Lead successfully converted to Client. Subscription activated and first Invoice generated!');
         setShowConvertModal(false);
         fetchData();
@@ -2349,7 +2349,7 @@ export default function PackageManagement() {
   const handleProposalDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this proposal?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/proposals/${id}`);
+      await axios.delete(`/api/proposals/${id}`);
       fetchData();
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to delete proposal');
@@ -2389,7 +2389,7 @@ export default function PackageManagement() {
     };
 
     try {
-      const res = await axios.post(`http://localhost:5000/api/client-packages/${subToRenew._id}/renew`, payload);
+      const res = await axios.post(`/api/client-packages/${subToRenew._id}/renew`, payload);
       if (res.data.success) {
         alert('Subscription renewed successfully! Renewal invoice has been generated.');
         setShowRenewalModal(false);
@@ -2403,7 +2403,7 @@ export default function PackageManagement() {
   const handleCancelSubscription = async (id: string) => {
     if (!window.confirm('Are you sure you want to expire/cancel this subscription?')) return;
     try {
-      await axios.put(`http://localhost:5000/api/client-packages/${id}`, { status: 'Expired' });
+      await axios.put(`/api/client-packages/${id}`, { status: 'Expired' });
       fetchData();
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to cancel subscription');
@@ -2438,7 +2438,7 @@ export default function PackageManagement() {
 
     setUploadingChequeImage(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/upload', uploadData, {
+      const res = await axios.post('/api/upload', uploadData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       if (res.data && (res.data.fileUrl || res.data.filePath)) {
@@ -2512,10 +2512,10 @@ export default function PackageManagement() {
         changedBy: loggedInUser.name || 'System'
       };
 
-      const convRes = await axios.post('http://localhost:5000/api/client-packages/convert-lead', convertPayload);
+      const convRes = await axios.post('/api/client-packages/convert-lead', convertPayload);
       if (convRes.data.success) {
         // Accept proposal
-        await axios.put(`http://localhost:5000/api/proposals/${prop._id}`, { status: 'Accepted' });
+        await axios.put(`/api/proposals/${prop._id}`, { status: 'Accepted' });
         
         const invoice = convRes.data.data.invoice;
         invoice.client = convRes.data.data.client;
@@ -2642,7 +2642,7 @@ export default function PackageManagement() {
     }
 
     try {
-      const response = await axios.put(`http://localhost:5000/api/invoices/${selectedInvoiceForPayment._id}`, payload);
+      const response = await axios.put(`/api/invoices/${selectedInvoiceForPayment._id}`, payload);
       alert(`Invoice status and payment options updated successfully!`);
       resetPaymentModalStates();
       setShowPaymentModal(false);
@@ -2658,7 +2658,7 @@ export default function PackageManagement() {
   const handleCancelInvoice = async (invoice: any) => {
     if (!window.confirm(`Cancel invoice ${invoice.invoiceNumber}?`)) return;
     try {
-      await axios.put(`http://localhost:5000/api/invoices/${invoice._id}`, { status: 'Cancelled' });
+      await axios.put(`/api/invoices/${invoice._id}`, { status: 'Cancelled' });
       fetchData();
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to cancel invoice');
@@ -4978,7 +4978,7 @@ export default function PackageManagement() {
                             <div style={{ marginTop: '10px' }}>
                               <p style={{ margin: '0 0 5px 0', fontSize: '12px', fontWeight: 600, color: '#475569' }}>Uploaded Cheque:</p>
                               <img 
-                                src={`http://localhost:5000${chequeImage}`} 
+                                src={`${chequeImage}`}
                                 alt="Cheque Preview" 
                                 style={{ width: '100%', maxHeight: '150px', objectFit: 'contain', borderRadius: '8px', border: '1px solid #e2e8f0' }} 
                               />

@@ -120,8 +120,8 @@ export default function Settings() {
   const fetchRolesAndPermissions = async () => {
     try {
       const [rolesRes, settingsRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/roles'),
-        axios.get('http://localhost:5000/api/settings')
+        axios.get('/api/roles'),
+        axios.get('/api/settings')
       ]);
 
       const fetchedRoles = rolesRes.data.data || [];
@@ -160,7 +160,7 @@ export default function Settings() {
 
   const fetchSettings = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/settings');
+      const res = await axios.get('/api/settings');
       const data = res.data.data;
       
       const getVal = (key: string) => data.find((s: any) => s.key === key)?.value;
@@ -206,7 +206,7 @@ export default function Settings() {
   const fetchLocations = async () => {
     setLocLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/locations');
+      const res = await axios.get('/api/locations');
       setLocations(res.data.data);
     } catch (err) {
       console.error('Error fetching locations:', err);
@@ -219,10 +219,10 @@ export default function Settings() {
     e.preventDefault();
     try {
       if (editingLocId) {
-        await axios.put(`http://localhost:5000/api/locations/${editingLocId}`, locFormData);
+        await axios.put(`/api/locations/${editingLocId}`, locFormData);
         alert('Location updated successfully!');
       } else {
-        await axios.post('http://localhost:5000/api/locations', locFormData);
+        await axios.post('/api/locations', locFormData);
         alert('Location added successfully!');
       }
       setShowLocModal(false);
@@ -250,7 +250,7 @@ export default function Settings() {
   const handleLocDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this location?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/locations/${id}`);
+      await axios.delete(`/api/locations/${id}`);
       alert('Location deleted successfully!');
       fetchLocations();
     } catch (err: any) {
@@ -262,7 +262,7 @@ export default function Settings() {
   const fetchCategories = async () => {
     setCatLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/business-categories');
+      const res = await axios.get('/api/business-categories');
       setCategories(res.data.data);
     } catch (err) {
       console.error('Error fetching categories:', err);
@@ -276,10 +276,10 @@ export default function Settings() {
     if (!catNameForm.trim()) return;
     try {
       if (editingCatId) {
-        await axios.put(`http://localhost:5000/api/business-categories/${editingCatId}`, { name: catNameForm.trim() });
+        await axios.put(`/api/business-categories/${editingCatId}`, { name: catNameForm.trim() });
         alert('Category updated successfully!');
       } else {
-        await axios.post('http://localhost:5000/api/business-categories', { name: catNameForm.trim() });
+        await axios.post('/api/business-categories', { name: catNameForm.trim() });
         alert('Category added successfully!');
       }
       setShowCatModal(false);
@@ -300,7 +300,7 @@ export default function Settings() {
   const handleCatDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this category? All its subcategories will be lost.')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/business-categories/${id}`);
+      await axios.delete(`/api/business-categories/${id}`);
       alert('Category deleted successfully!');
       fetchCategories();
       if (selectedCatId === id) setSelectedCatId('');
@@ -336,7 +336,7 @@ export default function Settings() {
     }
 
     try {
-      await axios.put(`http://localhost:5000/api/business-categories/${selectedCatId}`, { subcategories: updatedSubcats });
+      await axios.put(`/api/business-categories/${selectedCatId}`, { subcategories: updatedSubcats });
       alert(editingSubcatIndex !== null ? 'Subcategory updated successfully!' : 'Subcategory added successfully!');
       setShowSubcatModal(false);
       setSubcatNameForm('');
@@ -361,7 +361,7 @@ export default function Settings() {
     const updatedSubcats = cat.subcategories.filter((_: any, idx: number) => idx !== index);
 
     try {
-      await axios.put(`http://localhost:5000/api/business-categories/${selectedCatId}`, { subcategories: updatedSubcats });
+      await axios.put(`/api/business-categories/${selectedCatId}`, { subcategories: updatedSubcats });
       alert('Subcategory deleted successfully!');
       fetchCategories();
     } catch (err: any) {
@@ -372,7 +372,7 @@ export default function Settings() {
   const handleSaveMenuPermissions = async () => {
     setSavingPermissions(true);
     try {
-      await axios.post('http://localhost:5000/api/settings', {
+      await axios.post('/api/settings', {
         key: 'role_menu_permissions',
         value: rolePermissions
       });
@@ -420,7 +420,7 @@ export default function Settings() {
     formData.append('file', file);
     setUploading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/upload', formData);
+      const res = await axios.post('/api/upload', formData);
       setCompanyLogo(res.data.fileUrl);
     } catch (err) {
       alert('Error uploading logo');
@@ -462,7 +462,7 @@ export default function Settings() {
         { key: 'ccavenue_mode', value: ccavenueMode }
       ];
 
-      await Promise.all(settingsToSave.map(s => axios.post('http://localhost:5000/api/settings', s)));
+      await Promise.all(settingsToSave.map(s => axios.post('/api/settings', s)));
       alert('Settings updated successfully');
     } catch (err) {
       alert('Error saving settings');
@@ -549,7 +549,7 @@ export default function Settings() {
                   <div style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
                     <div style={{ width: '120px', height: '120px', borderRadius: '16px', background: '#f8fafc', border: '2px dashed #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
                       {companyLogo ? (
-                        <img src={`http://localhost:5000${companyLogo}`} alt="logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                        <img src={`${companyLogo}`} alt="logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                       ) : (
                         <Building size={40} color="#cbd5e1" />
                       )}

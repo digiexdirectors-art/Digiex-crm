@@ -23,7 +23,7 @@ export default function UserTypeManagement() {
 
   const fetchUserTypes = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/usertypes');
+      const res = await axios.get('/api/usertypes');
       setUserTypes(res.data.data);
     } catch (err) {
       console.error(err);
@@ -40,9 +40,9 @@ export default function UserTypeManagement() {
     setLoading(true);
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/usertypes/${editingId}`, { name });
+        await axios.put(`/api/usertypes/${editingId}`, { name });
       } else {
-        await axios.post('http://localhost:5000/api/usertypes', { name });
+        await axios.post('/api/usertypes', { name });
       }
       setName('');
       setEditingId(null);
@@ -67,7 +67,7 @@ export default function UserTypeManagement() {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this user type?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/usertypes/${id}`);
+      await axios.delete(`/api/usertypes/${id}`);
       fetchUserTypes();
     } catch (err) {
       console.error(err);

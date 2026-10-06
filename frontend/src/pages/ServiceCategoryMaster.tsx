@@ -16,7 +16,7 @@ export default function ServiceCategoryMaster() {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/service-categories');
+      const res = await axios.get('/api/service-categories');
       if (res.data.success) {
         setCategories(res.data.data);
       }
@@ -35,9 +35,9 @@ export default function ServiceCategoryMaster() {
     setLoading(true);
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/service-categories/${editingId}`, { name: name.trim(), status });
+        await axios.put(`/api/service-categories/${editingId}`, { name: name.trim(), status });
       } else {
-        await axios.post('http://localhost:5000/api/service-categories', { name: name.trim(), status });
+        await axios.post('/api/service-categories', { name: name.trim(), status });
       }
       setName('');
       setStatus('Active');
@@ -65,7 +65,7 @@ export default function ServiceCategoryMaster() {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this category?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/service-categories/${id}`);
+      await axios.delete(`/api/service-categories/${id}`);
       fetchCategories();
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to delete service category');
@@ -75,7 +75,7 @@ export default function ServiceCategoryMaster() {
   const toggleStatus = async (cat: any) => {
     const newStatus = cat.status === 'Active' ? 'Inactive' : 'Active';
     try {
-      await axios.put(`http://localhost:5000/api/service-categories/${cat._id}`, { status: newStatus });
+      await axios.put(`/api/service-categories/${cat._id}`, { status: newStatus });
       fetchCategories();
     } catch (err) {
       console.error(err);

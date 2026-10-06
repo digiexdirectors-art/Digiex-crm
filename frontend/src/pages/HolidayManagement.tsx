@@ -23,7 +23,7 @@ export default function HolidayManagement() {
 
   const fetchHolidays = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/holidays');
+      const res = await axios.get('/api/holidays');
       setHolidays(res.data.data);
     } catch (err) {
       console.error(err);
@@ -57,9 +57,9 @@ export default function HolidayManagement() {
     e.preventDefault();
     try {
       if (editingHoliday) {
-        await axios.put(`http://localhost:5000/api/holidays/${editingHoliday._id}`, formData);
+        await axios.put(`/api/holidays/${editingHoliday._id}`, formData);
       } else {
-        await axios.post('http://localhost:5000/api/holidays', formData);
+        await axios.post('/api/holidays', formData);
       }
       setShowModal(false);
       fetchHolidays();
@@ -71,7 +71,7 @@ export default function HolidayManagement() {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this holiday?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/holidays/${id}`);
+      await axios.delete(`/api/holidays/${id}`);
       fetchHolidays();
     } catch (err) {
       alert('Error deleting holiday');

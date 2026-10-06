@@ -43,7 +43,7 @@ export default function DashboardOverview() {
       setUser(parsed);
     }
 
-    axios.get('http://localhost:5000/api/clients').then(res => {
+    axios.get('/api/clients').then(res => {
       if (res.data.success) {
         const list = res.data.data;
         setClientsCount(list.length);

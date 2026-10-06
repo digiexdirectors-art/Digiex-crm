@@ -27,9 +27,9 @@ export default function RoleManagement() {
   const fetchData = async () => {
     try {
       const [rolesRes, utRes, deptRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/roles'),
-        axios.get('http://localhost:5000/api/usertypes'),
-        axios.get('http://localhost:5000/api/departments')
+        axios.get('/api/roles'),
+        axios.get('/api/usertypes'),
+        axios.get('/api/departments')
       ]);
       setRoles(rolesRes.data.data);
       setUserTypes(utRes.data.data);
@@ -57,9 +57,9 @@ export default function RoleManagement() {
     e.preventDefault();
     try {
       if (editingRoleId) {
-        await axios.put(`http://localhost:5000/api/roles/${editingRoleId}`, formData);
+        await axios.put(`/api/roles/${editingRoleId}`, formData);
       } else {
-        await axios.post('http://localhost:5000/api/roles', formData);
+        await axios.post('/api/roles', formData);
       }
       setShowModal(false);
       setEditingRoleId(null);
@@ -89,7 +89,7 @@ export default function RoleManagement() {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this role?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/roles/${id}`);
+      await axios.delete(`/api/roles/${id}`);
       fetchData();
     } catch (err) {
       alert('Error deleting role');

@@ -41,7 +41,7 @@ export default function AttendanceManagement() {
   const fetchAttendance = async () => {
     setLoading(true);
     try {
-      let url = `http://localhost:5000/api/attendance?`;
+      let url = `/api/attendance?`;
       if (filters.filterType === 'month') {
          url += `month=${filters.month}`;
       } else {
@@ -61,7 +61,7 @@ export default function AttendanceManagement() {
 
   useEffect(() => {
     if (hasSubmenuAccess) {
-      axios.get('http://localhost:5000/api/users')
+      axios.get('/api/users')
         .then(res => setUsersList(res.data.data))
         .catch(err => console.error(err));
     }

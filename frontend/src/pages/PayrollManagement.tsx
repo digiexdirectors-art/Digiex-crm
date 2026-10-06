@@ -38,8 +38,8 @@ export default function PayrollManagement() {
     const fetchInitial = async () => {
       try {
         const [uRes, sRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/users'),
-          axios.get('http://localhost:5000/api/settings')
+          axios.get('/api/users'),
+          axios.get('/api/settings')
         ]);
         if (uRes.data.success) {
           const active = (uRes.data.data || []).filter((u: any) => u.employmentStatus !== 'Inactive');
@@ -78,7 +78,7 @@ export default function PayrollManagement() {
     }
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/salary/summary', {
+      const res = await axios.get('/api/salary/summary', {
         params: {
           month,
           year,
@@ -120,7 +120,7 @@ export default function PayrollManagement() {
     if (!uId) return;
     setActionLoading(prev => ({ ...prev, [`save_${uId}`]: true }));
     try {
-      await axios.post('http://localhost:5000/api/salary/generate', {
+      await axios.post('/api/salary/generate', {
         userId: uId,
         month,
         year,
@@ -140,7 +140,7 @@ export default function PayrollManagement() {
     if (!uId) return;
     setActionLoading(prev => ({ ...prev, [`email_${uId}`]: true }));
     try {
-      const genRes = await axios.post('http://localhost:5000/api/salary/generate', {
+      const genRes = await axios.post('/api/salary/generate', {
         userId: uId,
         month,
         year,
@@ -148,7 +148,7 @@ export default function PayrollManagement() {
       });
       const slipId = genRes.data.data?._id;
       if (slipId) {
-        await axios.post('http://localhost:5000/api/salary/send-email', { slipId });
+        await axios.post('/api/salary/send-email', { slipId });
         alert(`Salary slip emailed successfully to ${item.user.email}!`);
       }
     } catch (err: any) {
@@ -161,7 +161,7 @@ export default function PayrollManagement() {
   // Download PDF Slip
   const handleDownloadPDF = async (item: any) => {
     const doc = new jsPDF();
-    const logoUrl = companySettings.company_logo ? `http://localhost:5000${companySettings.company_logo}` : 'https://digiexweb.com/assets/img/logo.png';
+    const logoUrl = companySettings.company_logo ? `${companySettings.company_logo}` : 'https://digiexweb.com/assets/img/logo.png';
     const companyName = companySettings.company_name || 'DIGIEX WEB SERVICES';
 
     const loadImageAsPng = async (url: string): Promise<string | null> => {

@@ -12,14 +12,14 @@ export default function Login() {
   const [imgFailed, setImgFailed] = useState(false);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/settings')
+    axios.get('/api/settings')
       .then(res => {
         if (res.data?.success) {
           const settings = res.data.data || [];
           const logoSetting = settings.find((s: any) => s.key === 'company_logo')?.value;
           const nameSetting = settings.find((s: any) => s.key === 'company_name')?.value;
           if (logoSetting) {
-            setCompanyLogo(logoSetting.startsWith('http') ? logoSetting : `http://localhost:5000${logoSetting}`);
+            setCompanyLogo(logoSetting.startsWith('http') ? logoSetting : `${logoSetting}`);
           }
           if (nameSetting) {
             setCompanyName(nameSetting);
@@ -35,7 +35,7 @@ export default function Login() {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const response = await axios.post('/api/auth/login', { email, password });
       if (response.data.success) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));

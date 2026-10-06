@@ -125,7 +125,7 @@ export default function LeaveManagement() {
 
   const fetchUserProfile = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/users/${loggedInUser.id || loggedInUser._id}`);
+      const res = await axios.get(`/api/users/${loggedInUser.id || loggedInUser._id}`);
       if (res.data.success) {
         setUserProfile(res.data.data);
         // Also update local storage so it's cached for future use
@@ -167,12 +167,12 @@ export default function LeaveManagement() {
   };
 
   const fetchBalances = async () => {
-    const res = await axios.get(`http://localhost:5000/api/leaves/balance/${loggedInUser.id || loggedInUser._id}`);
+    const res = await axios.get(`/api/leaves/balance/${loggedInUser.id || loggedInUser._id}`);
     setBalances(res.data.data || []);
   };
 
   const fetchLeaveTypes = async () => {
-    const res = await axios.get('http://localhost:5000/api/leaves/types');
+    const res = await axios.get('/api/leaves/types');
     setLeaveTypes(res.data.data || []);
   };
 
@@ -186,7 +186,7 @@ export default function LeaveManagement() {
     const currIsAdmin = currRole.includes('admin') || currRole.includes('super admin') || currType === 'admin' || currType === 'super admin';
     const currIsHR = currRole.includes('hr') || currRole.includes('human resource') || currDept.includes('hr') || currIsAdmin;
 
-    const res = await axios.get(`http://localhost:5000/api/leaves/requests?userId=${currentUser.id || currentUser._id}&role=${currRole}&department=${currDept}`);
+    const res = await axios.get(`/api/leaves/requests?userId=${currentUser.id || currentUser._id}&role=${currRole}&department=${currDept}`);
     const allReqs = res.data.data || [];
     setPersonalRequests(allReqs.filter((r: any) => r.employee?._id === (currentUser.id || currentUser._id)));
     setTeamRequests(allReqs.filter((r: any) => {
@@ -198,13 +198,13 @@ export default function LeaveManagement() {
   };
 
   const fetchUsers = async () => {
-    const res = await axios.get('http://localhost:5000/api/users');
+    const res = await axios.get('/api/users');
     setUsers(res.data.data || []);
   };
 
   const fetchAuditLogs = async () => {
     // Standard system audit log filter
-    const res = await axios.get('http://localhost:5000/api/users'); // Mocked log / we use User list for detail extraction
+    const res = await axios.get('/api/users'); // Mocked log / we use User list for detail extraction
     setAuditLogs([]);
   };
 
@@ -216,7 +216,7 @@ export default function LeaveManagement() {
     uploadData.append('file', file);
     setUploading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/upload', uploadData, {
+      const res = await axios.post('/api/upload', uploadData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setApplyForm(prev => ({ ...prev, attachment: res.data.fileUrl }));
@@ -272,7 +272,7 @@ export default function LeaveManagement() {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/leaves/apply', {
+      await axios.post('/api/leaves/apply', {
         employeeId: selectedEmployeeId || loggedInUser.id || loggedInUser._id,
         leaveTypeId: applyForm.leaveTypeId,
         fromDate: applyForm.fromDate,
@@ -309,7 +309,7 @@ export default function LeaveManagement() {
   const handleCancelRequest = async (reqId: string) => {
     if (!window.confirm('Are you sure you want to cancel this leave request?')) return;
     try {
-      await axios.post(`http://localhost:5000/api/leaves/cancel/${reqId}`, {
+      await axios.post(`/api/leaves/cancel/${reqId}`, {
         actorId: loggedInUser.id || loggedInUser._id
       });
       alert('Leave request cancelled successfully!');
@@ -338,7 +338,7 @@ export default function LeaveManagement() {
     setSaving(true);
     try {
       const endpoint = selectedRequestAction.type === 'approve' ? 'approve' : 'reject';
-      await axios.post(`http://localhost:5000/api/leaves/${endpoint}/${selectedRequestAction.id}`, {
+      await axios.post(`/api/leaves/${endpoint}/${selectedRequestAction.id}`, {
         actorId: loggedInUser.id || loggedInUser._id,
         role: loggedInRole,
         remarks: remarksText
@@ -360,7 +360,7 @@ export default function LeaveManagement() {
     if (!selectedPolicyType) return;
     setSaving(true);
     try {
-      await axios.post('http://localhost:5000/api/leaves/types', {
+      await axios.post('/api/leaves/types', {
         ...selectedPolicyType,
         performedBy: loggedInUser.id || loggedInUser._id
       });
@@ -378,7 +378,7 @@ export default function LeaveManagement() {
     e.preventDefault();
     setSaving(true);
     try {
-      await axios.post('http://localhost:5000/api/leaves/adjust', {
+      await axios.post('/api/leaves/adjust', {
         ...adjustForm,
         performedBy: loggedInUser.id || loggedInUser._id
       });
@@ -400,7 +400,7 @@ export default function LeaveManagement() {
     }
     setSaving(true);
     try {
-      await axios.post('http://localhost:5000/api/leaves/bulk-allocate', {
+      await axios.post('/api/leaves/bulk-allocate', {
         ...bulkForm,
         performedBy: loggedInUser.id || loggedInUser._id
       });
